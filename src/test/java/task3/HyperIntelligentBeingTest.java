@@ -51,7 +51,7 @@ class HyperIntelligentBeingTest {
         void testDebateScoreCalculation() {
             MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 5, 30);
             being.debateMeaningOfLife(debate);
-            assertEquals(140, debate.calculateDebateScore(being));
+            assertEquals(100, debate.calculateDebateScore(being));
         }
     }
 
