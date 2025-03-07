@@ -35,6 +35,105 @@ class HyperIntelligentBeingTest {
     class DebateTests {
 
         @Test
+        @DisplayName("Test HyperIntelligentBeingBuilder toString")
+        void testBuilderToString() {
+            HyperIntelligentBeing.HyperIntelligentBeingBuilder builder = HyperIntelligentBeing.builder()
+                    .name("Zaphod")
+                    .intelligence(80)
+                    .energy(100)
+                    .debateSkill(70)
+                    .cricketSkill(50);
+            String expected = "HyperIntelligentBeing.HyperIntelligentBeingBuilder(name=Zaphod, intelligence=80, energy=100, debateSkill=70, cricketSkill=50)";
+            assertEquals(expected, builder.toString());
+        }
+
+        @Test
+        @DisplayName("Test debate failure due to insufficient debate skill")
+        void testDebateFailureDueToInsufficientDebateSkill() {
+            MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 5, 30);
+            being.setDebateSkill(0);
+            assertFalse(being.debateMeaningOfLife(debate));
+            assertEquals(100, being.getEnergy()); // Energy should not be deducted
+        }
+
+
+        @Test
+        @DisplayName("Test printing cricket skill leaderboard")
+        void testPrintCricketSkillLeaderboard() {
+            Universe universe = new Universe();
+            universe.addBeing(being);
+            HyperIntelligentBeing being2 = HyperIntelligentBeing.builder()
+                    .name("Ford")
+                    .intelligence(60)
+                    .energy(100)
+                    .debateSkill(50)
+                    .cricketSkill(40)
+                    .build();
+            universe.addBeing(being2);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outputStream));
+
+            universe.displayCricketSkillLeaderboard();
+            String expectedOutput = "Cricket Skill Leaderboard:\nZaphod: 50\nFord: 40\n";
+            assertEquals(expectedOutput, outputStream.toString());
+        }
+
+        @Test
+        @DisplayName("Test being is not exhausted")
+        void testBeingIsNotExhausted() {
+            being.setEnergy(10);
+            assertFalse(being.isExhausted());
+        }
+
+        @Test
+        @DisplayName("Test rest with maximum energy")
+        void testRestWithMaximumEnergy() {
+            being.setEnergy(100);
+            being.rest();
+            assertEquals(100, being.getEnergy()); // Energy should not exceed 100
+        }
+
+        @Test
+        @DisplayName("Test cricket game failure due to insufficient cricket skill")
+        void testCricketGameFailureDueToInsufficientCricketSkill() {
+            HyperIntelligentBeing opponent = HyperIntelligentBeing.builder()
+                    .name("Ford")
+                    .intelligence(60)
+                    .energy(100)
+                    .debateSkill(50)
+                    .cricketSkill(40)
+                    .build();
+            being.setCricketSkill(0);
+            assertFalse(being.playBrokianUltraCricket(opponent));
+            assertEquals(100, being.getEnergy()); // Energy should not be deducted
+        }
+
+        @Test
+        @DisplayName("Test debate with exact energy required")
+        void testDebateWithExactEnergyRequired() {
+            MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 5, 10);
+            being.setEnergy(10);
+            assertTrue(being.debateMeaningOfLife(debate));
+            assertEquals(0, being.getEnergy());
+        }
+
+        @Test
+        @DisplayName("Test cricket game with exact energy required")
+        void testCricketGameWithExactEnergyRequired() {
+            HyperIntelligentBeing opponent = HyperIntelligentBeing.builder()
+                    .name("Ford")
+                    .intelligence(60)
+                    .energy(100)
+                    .debateSkill(50)
+                    .cricketSkill(40)
+                    .build();
+            being.setEnergy(20);
+            assertTrue(being.playBrokianUltraCricket(opponent));
+            assertEquals(0, being.getEnergy());
+        }
+
+        @Test
         @DisplayName("Test successful debate with enough energy")
         void testSuccessfulDebate() {
             MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 5, 30);
@@ -197,6 +296,55 @@ class UniverseTest {
                 .debateSkill(50)
                 .cricketSkill(40)
                 .build();
+    }
+
+
+    @Test
+    @DisplayName("Test getTopic method")
+    void testGetTopic() {
+        MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 5, 30);
+        assertEquals("Life, the Universe, and Everything", debate.getTopic());
+    }
+
+    @Test
+    @DisplayName("Test getComplexity method")
+    void testGetComplexity() {
+        MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 5, 30);
+        assertEquals(5, debate.getComplexity());
+    }
+
+    @Test
+    @DisplayName("Test getTimeLimit method")
+    void testGetTimeLimit() {
+        MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 5, 30);
+        assertEquals(30, debate.getTimeLimit());
+    }
+
+
+    @Test
+    @DisplayName("Test calculateDebateScore with zero complexity")
+    void testCalculateDebateScoreWithZeroComplexity() {
+        MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 0, 30);
+        debate.addParticipant(being1);
+        debate.startDebate();
+        assertEquals(0, debate.calculateDebateScore(being1));
+    }
+
+    @Test
+    @DisplayName("Test calculateDebateScore with zero time limit")
+    void testCalculateDebateScoreWithZeroTimeLimit() {
+        MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 5, 0);
+        debate.addParticipant(being1);
+        debate.startDebate();
+        assertEquals(0, debate.calculateDebateScore(being1));
+    }
+
+    @Test
+    @DisplayName("Test DebateOutcome toString method")
+    void testDebateOutcomeToString() {
+        MeaningOfLifeDebate.DebateOutcome outcome = new MeaningOfLifeDebate.DebateOutcome(being1, true,100);
+        String expected = "Zaphod - Won (Score: 100)";
+        assertEquals(expected, outcome.toString());
     }
 
     @Test

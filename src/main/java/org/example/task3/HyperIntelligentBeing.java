@@ -34,6 +34,10 @@ public class HyperIntelligentBeing {
             return false;
         }
 
+        if (debateSkill <= 0 ) {
+            return false;
+        }
+
         energy -= DEBATE_ENERGY_COST;
         System.out.println(name + " is taking part into debate " + debate.getTopic());
 
@@ -58,6 +62,9 @@ public class HyperIntelligentBeing {
     public boolean playBrokianUltraCricket(HyperIntelligentBeing target) {
         if (energy < CRICKET_ENERGY_COST) {
             System.out.println(name + " is too tired to play!");
+            return false;
+        }
+        if (cricketSkill <= 0) {
             return false;
         }
 

@@ -63,6 +63,9 @@ public class MeaningOfLifeDebate {
      */
     public int calculateDebateScore(HyperIntelligentBeing being) {
         // Score is based on intelligence, debate skill, and debate complexity
+        if (timeLimit <= 0 || complexity <= 0) {
+            return 0;
+        }
         int baseScore = being.getIntelligence() + being.getDebateSkill();
         int adjustedScore = baseScore - complexity * 10; // Higher complexity reduces the score
         return Math.max(adjustedScore, 0); // Ensure score is not negative
@@ -83,7 +86,7 @@ public class MeaningOfLifeDebate {
     /**
      * Inner class to represent the outcome of a debate for a being.
      */
-    private static class DebateOutcome {
+    public static class DebateOutcome {
         private HyperIntelligentBeing being;
         private boolean isWin;
         private int score;
