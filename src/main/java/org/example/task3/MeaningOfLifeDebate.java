@@ -71,11 +71,13 @@ public class MeaningOfLifeDebate {
     /**
      * Display the history of past debates.
      */
-    public void displayDebateHistory() {
-        System.out.println("Debate History for: " + topic);
+    public String displayDebateHistory() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Debate History for: ").append(topic).append("\n");
         for (DebateOutcome outcome : history) {
-            System.out.println(outcome);
+            sb.append(outcome).append("\n");
         }
+        return sb.toString();
     }
 
     /**

@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(TestLoggingAndTimingExtension.class)
@@ -52,9 +55,20 @@ class HyperIntelligentBeingTest {
         @DisplayName("Test debate score calculation")
         void testDebateScoreCalculation() {
             MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 5, 30);
-            being.debateMeaningOfLife(debate);
+            debate.addParticipant(being);
+            debate.startDebate();
             assertEquals(100, debate.calculateDebateScore(being));
         }
+
+        @Test
+        @DisplayName("Test ability to print history of debates")
+        void testDebatePrintingHistory() {
+            MeaningOfLifeDebate debate = new MeaningOfLifeDebate("Life, the Universe, and Everything", 5, 30);
+            debate.addParticipant(being);
+            debate.startDebate();
+            assertEquals("Debate History for: Life, the Universe, and Everything\nZaphod - Won (Score: 100)\n", debate.displayDebateHistory());
+        }
+
     }
 
     @Nested
@@ -191,6 +205,69 @@ class UniverseTest {
         universe.addBeing(being1);
         assertEquals(1, universe.getBeings().size());
         assertTrue(universe.getBeingNames().contains(being1.getName()));
+    }
+
+    @Test
+    @DisplayName("Test displaying cricket skill leaderboard")
+    void testDisplayCricketSkillLeaderboard() {
+        universe.addBeing(being1);
+        universe.addBeing(being2);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        universe.displayCricketSkillLeaderboard();
+
+        String expectedOutput = "Cricket Skill Leaderboard:\n" +
+                "Zaphod: 50\n" +
+                "Ford: 40\n";
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    @DisplayName("Test displaying debate skill leaderboard")
+    void testDisplayDebateSkillLeaderboard() {
+        universe.addBeing(being1);
+        universe.addBeing(being2);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        universe.displayDebateSkillLeaderboard();
+
+        String expectedOutput = "Debate Skill Leaderboard:\n" +
+                "Zaphod: 70\n" +
+                "Ford: 50\n";
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    @DisplayName("Test displaying intelligence leaderboard")
+    void testDisplayIntelligenceLeaderboard() {
+        universe.addBeing(being1);
+        universe.addBeing(being2);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        universe.displayIntelligenceLeaderboard();
+
+        String expectedOutput = "Intelligence Leaderboard:\n" +
+                "Zaphod: 80\n" +
+                "Ford: 60\n";
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    @DisplayName("Test getting total energy of all beings")
+    void testGetTotalEnergy() {
+        universe.addBeing(being1);
+        universe.addBeing(being2);
+
+        assertEquals(200, universe.getTotalEnergy());
+
+        being1.setEnergy(50);
+        assertEquals(150, universe.getTotalEnergy());
     }
 
     @Test
